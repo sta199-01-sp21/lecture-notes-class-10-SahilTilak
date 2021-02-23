@@ -50,16 +50,26 @@ xtabs(~ Treatment + Improved, data = Arthritis) %>%
 
 - How many patients were enrolled in the clinical trial?
 
+84
+
 - What is the probability a randomly selected patient received the placebo?
+
+43/84
 
 - What is the probability a randomly selected patient received the placebo
   and had a marked improvement?
+
+7/84
   
 - What is the probability a randomly selected patient received the placebo
   and the treatment?
-  
+
+0/74  
+
 - What is the probability a randomly selected patient had some improvement or
   was on the treatment?
+  
+(14+41-7)/84 = 48/84
 
 ## Using computer simulations to calculate probabilities
 
@@ -101,6 +111,8 @@ prop.table(counts)
 ```
 
 How close is this value to the "true" probability?
+
+It is very close but not identical
 
 **To summarize our process:**
 
@@ -157,16 +169,31 @@ Perform a simulation to compute this empirical probability.
 
 Write down your guess to the answer before you calculate it.
 
-```{r simulate_rolls}
+There is a greater probability that dice roll 1 = dice roll 2
 
+```{r simulate_rolls}
+dice <- c(1, 2, 3, 4, 5, 6)
+two_roll_results <- tibble(
+  roll_1 = sample(dice, size = 10000, replace = TRUE),
+  roll_2 = sample(dice, size = 10000, replace = TRUE)
+)
 ```
 
 ```{r identify_events}
+two_roll_results <- two_roll_results %>%
+  mutate(number_match = roll_1 == roll_2) %>%
+  mutate(less_than_4 = roll_1 + roll_2 == 4)
 
 ```
 
 ```{r summarize_rolls}
+two_roll_results %>% 
+  count(number_match) %>% 
+  mutate(proportion = n / sum(n))
 
+two_roll_results %>% 
+  count(less_than_4) %>% 
+  mutate(proportion = n / sum(n))
 ```
 
 ## Additional Resources-please look at before Weds.
